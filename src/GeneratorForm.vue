@@ -60,16 +60,12 @@
 </template>
 
 <script>
-const threeLettersWords = "яма, дом, кон, ром, лак, лор, вол, воз, ток, кот, лот, год, мак, бак, рак, мор, три, бра, топ, час, все, пот, мир, кал, юла, ель, ива, око, зло, миг, мел, лов, зов, мат, лад, жор, бит, акт, кол, рот, рок, рог, еда, боб, бор, лес, раб";
-const fourLettersWords = "авто, агат, ажур, аист, айва, алло, барс, бард, баня, бант, банк, балл, блиц, бобр, бюро, бюст, быль, было, буян, елей, если, едок, едва, енот, елка, желе, жнец, жезл, жижа, гипс, груз, гнет, гусь, гарь, вилы, воля, весь, ишак, изба, инок, ибис, икры, круг, кофе, ковш, клей, лето, ложа, лыко, наст, ночь, нива";
-const fiveLettersWords = "автор, анонс, архив, адрес, астра, булка, багор, баран, батон, вилла, вкруг, вовсю, волхв, гомон, греза, грязь, гамма, дымка, далее, десна, ездок, егерь, ехать, езжай, желчь, жабры, жизнь, жучок, изгиб, кивок, клерк, ковер, копия, крыша, лампа, легат, масло, месса, наказ, недуг, отруб, охота, обгон";
-
 export default {
   data() {
     return {
-      threeLettersWords,
-      fourLettersWords,
-      fiveLettersWords,
+      threeLettersWords: "яма, дом, кон, ром, лак, лор, вол, воз, ток, кот, лот, год, мак, бак, рак, мор, три, бра, топ, час, все, пот, мир, кал, юла, ель, ива, око, зло, миг, мел, лов, зов, мат, лад, жор, бит, акт, кол, рот, рок, рог, еда, боб, бор, лес, раб",
+      fourLettersWords: "авто, агат, ажур, аист, айва, алло, барс, бард, баня, бант, банк, балл, блиц, бобр, бюро, бюст, быль, было, буян, елей, если, едок, едва, енот, елка, желе, жнец, жезл, жижа, гипс, груз, гнет, гусь, гарь, вилы, воля, весь, ишак, изба, инок, ибис, икры, круг, кофе, ковш, клей, лето, ложа, лыко, наст, ночь, нива",
+      fiveLettersWords: "автор, анонс, архив, адрес, астра, булка, багор, баран, батон, вилла, вкруг, вовсю, волхв, гомон, греза, грязь, гамма, дымка, далее, десна, ездок, егерь, ехать, езжай, желчь, жабры, жизнь, жучок, изгиб, кивок, клерк, ковер, копия, крыша, лампа, легат, масло, месса, наказ, недуг, отруб, охота, обгон",
       rowsCount: 2,
       colsCount: 2,
       lettersCount: 3,
@@ -84,54 +80,38 @@ export default {
       let words = ''
       switch (this.lettersCount) {
         case 4:
-          words = this.fourLettersWords
-              .split(',')
-              .map((word) => {
-                const _word = word.replace(' ', '')
-                return {
-                  word: _word,
-                  positions: word.split('').map(() => this.letterPosition(_word))
-                }
-              })
+          words = this.fourLettersWords.split(',')
           break;
         case 5:
-          words = this.fiveLettersWords
-              .split(',')
-              .map((word) => {
-                const _word = word.replace(' ', '')
-                return {
-                  word: _word,
-                  positions: word.split('').map(() => this.letterPosition(_word))
-                }
-              })
+          words = this.fiveLettersWords.split(',')
           break;
         default:
-          words = this.threeLettersWords
-              .split(',')
-              .map((word) => {
-                const _word = word.replace(' ', '')
-                return {
-                  word: _word,
-                  positions: word.split('').map(() => this.letterPosition(_word))
-                }
-              })
-          break;
+          words = this.threeLettersWords.split(',')
       }
-      return words
+      return words.map((word) => {
+        let currentWord = ''
+        let currentLetterPositions = []
+        let currentLetterPosition = ''
+        const _word = word.replace(' ', '')
+        return {
+          word: _word,
+          positions: _word.split('').map(() => {
+            if (currentWord !== _word) {
+              currentWord = _word
+              currentLetterPositions = [...this.positions]
+            } else {
+              const curPosIndex = currentLetterPositions
+                  .findIndex((item) => item === currentLetterPosition)
+              currentLetterPositions.splice(curPosIndex, 1)
+            }
+            currentLetterPosition = currentLetterPositions[this.randomIntFromInterval(0, currentLetterPositions.length - 1)]
+            return currentLetterPosition
+          })
+        }
+      });
     },
     randomIntFromInterval(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min)
-    },
-    letterPosition(word) {
-      if (this.currentWord !== word) {
-        this.currentWord = word
-        this.currentLetterPositions = [...this.positions]
-      } else {
-        const curPosIndex = this.currentLetterPositions.findIndex((item) => item === this.currentLetterPosition)
-        this.currentLetterPositions.splice(curPosIndex, 1)
-      }
-      this.currentLetterPosition = this.currentLetterPositions[this.randomIntFromInterval(0, this.currentLetterPositions.length - 1)]
-      return this.currentLetterPosition
     }
   }
 }
