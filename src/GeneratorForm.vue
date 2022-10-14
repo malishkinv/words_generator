@@ -35,7 +35,7 @@
         <div class="col">Слова</div>
       </div>
       <div class="row">
-        <div class="col">{{ currentWords().map((word) => word.word) }}</div>
+        <div class="col">{{ currentWords().map((word) => word.word).join(', ') }}</div>
       </div>
     </form>
     <div
