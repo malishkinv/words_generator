@@ -35,24 +35,23 @@
         <div class="col">Слова</div>
       </div>
       <div class="row">
-        <div class="col">{{ currentWords.join(', ') }}</div>
+        <div class="col">{{ currentWords().map((word) => word.word) }}</div>
       </div>
     </form>
     <div
         class="result"
         :style="{'grid-template-columns': `repeat(${colsCount}, 100px)`, 'grid-template-rows': `repeat(${rowsCount}, 100px)`}"
     >
-      <template v-for="(word, wIdx) in currentWords">
-        <template v-if="wIdx < colsCount*rowsCount">
+      <template v-for="(word, wIdx) in currentWords()">
+        <template v-if="wIdx < (colsCount * rowsCount)">
           <div class="letter__wrapper" :key="`word${wIdx}`">
-            <template v-for="(letter, lIdx) in word">
-              <div
-                :class="`letter letter${lIdx+1} letter${lIdx+1}--${letterPosition(word)}`"
-                :key="`letter${lIdx}`"
-              >
-                {{ letter.toUpperCase() }}
-              </div>
-            </template>
+            <div
+              v-for="(letter, lIdx) in word.word"
+              :class="`letter letter${lIdx+1} letter${lIdx+1}--${word.positions[lIdx]}`"
+              :key="`letter${lIdx}`"
+            >
+              {{ letter.toUpperCase() }}
+            </div>
           </div>
         </template>
       </template>
@@ -68,54 +67,70 @@ const fiveLettersWords = "автор, анонс, архив, адрес, аст
 export default {
   data() {
     return {
+      threeLettersWords,
+      fourLettersWords,
+      fiveLettersWords,
       rowsCount: 2,
       colsCount: 2,
       lettersCount: 3,
       positions: ['left', 'top', 'bottom', 'center', 'right'],
+      currentLetterPositions: [],
       currentLetterPosition: '',
       currentWord: ''
     }
   },
-  computed: {
-    threeLettersWords() {
-      return threeLettersWords
-          .split(',')
-          .map((word) => word.replace(' ', ''))
-    },
-    fourLettersWords() {
-      return fourLettersWords
-          .split(',')
-          .map((word) => word.replace(' ', ''))
-    },
-    fiveLettersWords() {
-      return fiveLettersWords
-          .split(',')
-          .map((word) => word.replace(' ', ''))
-    },
+  methods: {
     currentWords() {
       let words = ''
       switch (this.lettersCount) {
-        case 3: words = this.threeLettersWords; break;
-        case 4: words = this.fourLettersWords; break;
-        case 5: words = this.fiveLettersWords; break;
+        case 4:
+          words = this.fourLettersWords
+              .split(',')
+              .map((word) => {
+                const _word = word.replace(' ', '')
+                return {
+                  word: _word,
+                  positions: word.split('').map(() => this.letterPosition(_word))
+                }
+              })
+          break;
+        case 5:
+          words = this.fiveLettersWords
+              .split(',')
+              .map((word) => {
+                const _word = word.replace(' ', '')
+                return {
+                  word: _word,
+                  positions: word.split('').map(() => this.letterPosition(_word))
+                }
+              })
+          break;
+        default:
+          words = this.threeLettersWords
+              .split(',')
+              .map((word) => {
+                const _word = word.replace(' ', '')
+                return {
+                  word: _word,
+                  positions: word.split('').map(() => this.letterPosition(_word))
+                }
+              })
+          break;
       }
       return words
-    }
-  },
-  methods: {
+    },
     randomIntFromInterval(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min)
     },
     letterPosition(word) {
-      console.log(word)
-      let positions = [...this.positions]
       if (this.currentWord !== word) {
         this.currentWord = word
+        this.currentLetterPositions = [...this.positions]
       } else {
-        const curPosIndex = this.positions.findIndex((item) => item === this.currentLetterPosition)
-        positions.splice(curPosIndex, 1)
+        const curPosIndex = this.currentLetterPositions.findIndex((item) => item === this.currentLetterPosition)
+        this.currentLetterPositions.splice(curPosIndex, 1)
       }
-      this.currentLetterPosition = positions[this.randomIntFromInterval(0, positions.length - 1)]
+      this.currentLetterPosition = this.currentLetterPositions[this.randomIntFromInterval(0, this.currentLetterPositions.length - 1)]
       return this.currentLetterPosition
     }
   }
