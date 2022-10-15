@@ -173,14 +173,12 @@ button {
   position: absolute;
 }
 .letter1 {
-  background-color: #e5e5e5;
   width: 80px;
   height: 80px;
   font-size: 96px;
   font-weight: 100;
 }
 .letter2 {
-  background-color: #55fae5;
   width: 50px;
   height: 50px;
   font-size: 66px;
@@ -207,7 +205,6 @@ button {
   top: 15px;
 }
 .letter3 {
-  background-color: #ffabff;
   width: 30px;
   height: 30px;
   font-size: 40px;
@@ -234,7 +231,6 @@ button {
   left: 25px;
 }
 .letter4 {
-  background-color: #a1cdee;
   width: 18px;
   height: 18px;
   font-size: 24px;
@@ -261,7 +257,6 @@ button {
   left: 32px;
 }
 .letter5 {
-  background-color: #e2e89c;
   width: 10px;
   height: 10px;
   font-size: 16px;
