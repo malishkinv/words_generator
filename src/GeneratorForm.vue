@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form class="form">
+    <div class="form">
       <div class="row">
         <div class="col">Кол-во столбцов</div>
         <div class="col">
@@ -35,14 +35,19 @@
         <div class="col">Слова</div>
       </div>
       <div class="row">
-        <div class="col">{{ currentWords().map((word) => word.word).join(', ') }}</div>
+        <div class="col">
+          <button @click="generate()">Сгенерировать</button>
+        </div>
       </div>
-    </form>
+      <div class="row">
+        <div class="col">{{ generated.map((word) => word.word).join(', ') }}</div>
+      </div>
+    </div>
     <div
         class="result"
         :style="{'grid-template-columns': `repeat(${colsCount}, 100px)`, 'grid-template-rows': `repeat(${rowsCount}, 100px)`}"
     >
-      <template v-for="(word, wIdx) in currentWords()">
+      <template v-for="(word, wIdx) in generated">
         <template v-if="wIdx < (colsCount * rowsCount)">
           <div class="letter__wrapper" :key="`word${wIdx}`">
             <div
@@ -70,9 +75,7 @@ export default {
       colsCount: 2,
       lettersCount: 3,
       positions: ['left', 'top', 'bottom', 'center', 'right'],
-      currentLetterPositions: [],
-      currentLetterPosition: '',
-      currentWord: ''
+      generated: []
     }
   },
   methods: {
@@ -112,6 +115,9 @@ export default {
     },
     randomIntFromInterval(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min)
+    },
+    generate() {
+      this.generated = this.currentWords()
     }
   }
 }
@@ -137,7 +143,6 @@ export default {
   text-align: left;
 }
 select {
-
   padding: 4px 6px;
   width: 80px;
 }
@@ -155,10 +160,9 @@ button {
 }
 .letter__wrapper {
   box-sizing: border-box;
-  border: 1px solid #aeaeae;
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
 }
 .letter {
   box-sizing: border-box;
@@ -170,9 +174,9 @@ button {
 }
 .letter1 {
   background-color: #e5e5e5;
-  width: 100px;
-  height: 100px;
-  font-size: 126px;
+  width: 80px;
+  height: 80px;
+  font-size: 96px;
   font-weight: 100;
 }
 .letter2 {
@@ -184,23 +188,23 @@ button {
 }
 .letter2--bottom {
   bottom: 5px;
-  left: 25px;
+  left: 15px;
 }
 .letter2--top {
   top: 5px;
-  left: 25px;
+  left: 15px;
 }
 .letter2--left {
   left: 5px;
-  top: 25px;
+  top: 15px;
 }
 .letter2--right {
   right: 5px;
-  top: 25px;
+  top: 15px
 }
 .letter2--center {
-  left: 25px;
-  top: 25px;
+  left: 15px;
+  top: 15px;
 }
 .letter3 {
   background-color: #ffabff;
@@ -211,23 +215,23 @@ button {
 }
 .letter3--bottom {
   bottom:5px;
-  left:35px;
+  left: 15px;
 }
 .letter3--top {
-  top:5px;
-  left:35px;
+  top: 5px;
+  left: 15px;
 }
 .letter3--left {
-  top: 35px;
+  top: 15px;
   left: 5px;
 }
 .letter3--right {
   right: 5px;
-  top: 35px;
+  top: 15px;
 }
 .letter3--center {
-  top: 35px;
-  left: 35px;
+  top: 25px;
+  left: 25px;
 }
 .letter4 {
   background-color: #a1cdee;
@@ -237,24 +241,24 @@ button {
   font-weight: 100;
 }
 .letter4--bottom {
-  bottom:10px;
-  left: 41px;
+  bottom: 10px;
+  left: 32px;
 }
 .letter4--top {
-  top:10px;
-  left: 41px;
+  top: 10px;
+  left: 32px;
 }
 .letter4--left {
-  top: 41px;
+  top: 24px;
   left: 5px;
 }
 .letter4--right {
-  top: 41px;
+  top: 24px;
   right: 5px;
 }
 .letter4--center {
-  top: 41px;
-  left: 41px;
+  top: 32px;
+  left: 32px;
 }
 .letter5 {
   background-color: #e2e89c;
@@ -265,22 +269,22 @@ button {
 }
 .letter5--bottom {
   bottom: 5px;
-  left: 44px;
+  left: 32px;
 }
 .letter5--top {
   top: 10px;
-  left: 40px;
+  left: 28px;
 }
 .letter5--left {
-  bottom: 44px;
+  bottom: 32px;
   left: 10px;
 }
 .letter5--right {
   right: 10px;
-  top: 44px;
+  top: 32px;
 }
 .letter5--center {
-  right: 48px;
-  top: 48px;
+  right: 32px;
+  top: 32px;
 }
 </style>
