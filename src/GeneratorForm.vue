@@ -37,25 +37,28 @@
       <div class="row">
         <div class="col">
           <button @click="generate()">Сгенерировать</button>
+          <button v-if="generated.length" @click="toggleAnswers()" class="button__answers">Ответы</button>
         </div>
-      </div>
-      <div class="row">
-        <div class="col">{{ generated.map((word) => word.word).join(', ') }}</div>
       </div>
     </div>
     <div
         class="result"
-        :style="{'grid-template-columns': `repeat(${colsCount}, 100px)`, 'grid-template-rows': `repeat(${rowsCount}, 100px)`}"
+        :style="{'grid-template-columns': `repeat(${ccolsCount}, 100px)`, 'grid-template-rows': `repeat(${rrowsCount}, 100px)`}"
     >
       <template v-for="(word, wIdx) in generated">
-        <template v-if="wIdx < (colsCount * rowsCount)">
+        <template v-if="wIdx < rw">
           <div class="letter__wrapper" :key="`word${wIdx}`">
-            <div
-              v-for="(letter, lIdx) in word.word"
-              :class="`letter letter${lIdx+1} letter${lIdx+1}--${word.positions[lIdx]}`"
-              :key="`letter${lIdx}`"
-            >
-              {{ letter.toUpperCase() }}
+            <template v-if="mode === 'letters'">
+              <div
+                v-for="(letter, lIdx) in word.word"
+                :class="`letter letter${lIdx+1} letter${lIdx+1}--${word.positions[lIdx]}`"
+                :key="`letter${lIdx}`"
+              >
+                {{ letter.toUpperCase() }}
+              </div>
+            </template>
+            <div v-if="mode === 'words'">
+              {{ word.word }}
             </div>
           </div>
         </template>
@@ -65,6 +68,18 @@
 </template>
 
 <script>
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex
+
+  while (currentIndex != 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex--
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]]
+  }
+  return array;
+}
+
 export default {
   data() {
     return {
@@ -73,9 +88,13 @@ export default {
       fiveLettersWords: "автор, анонс, архив, адрес, астра, булка, багор, баран, батон, вилла, вкруг, вовсю, волхв, гомон, греза, грязь, гамма, дымка, далее, десна, ездок, егерь, ехать, езжай, желчь, жабры, жизнь, жучок, изгиб, кивок, клерк, ковер, копия, крыша, лампа, легат, масло, месса, наказ, недуг, отруб, охота, обгон",
       rowsCount: 2,
       colsCount: 2,
+      rrowsCount: 2,
+      ccolsCount: 2,
+      rw: 4,
       lettersCount: 3,
       positions: ['left', 'top', 'bottom', 'center', 'right'],
-      generated: []
+      generated: [],
+      mode: 'letters'
     }
   },
   methods: {
@@ -83,13 +102,13 @@ export default {
       let words = ''
       switch (this.lettersCount) {
         case 4:
-          words = this.fourLettersWords.split(',')
+          words = shuffle(this.fourLettersWords.split(','))
           break;
         case 5:
-          words = this.fiveLettersWords.split(',')
+          words = shuffle(this.fiveLettersWords.split(','))
           break;
         default:
-          words = this.threeLettersWords.split(',')
+          words = shuffle(this.threeLettersWords.split(','))
       }
       return words.map((word) => {
         let currentWord = ''
@@ -117,7 +136,18 @@ export default {
       return Math.floor(Math.random() * (max - min + 1) + min)
     },
     generate() {
+      this.mode = 'letters'
+      this.rw = this.rowsCount * this.colsCount
+      this.rrowsCount = this.rowsCount
+      this.ccolsCount = this.colsCount
       this.generated = this.currentWords()
+    },
+    toggleAnswers() {
+      if (this.mode === 'letters') {
+        this.mode = 'words'
+      } else {
+        this.mode = 'letters'
+      }
     }
   }
 }
@@ -150,6 +180,9 @@ button {
   border: 1px solid #9f9f9f;
   padding: 6px 10px;
   border-radius: 4px;
+}
+.button__answers {
+  margin-left: 16px;
 }
 .result {
   width: fit-content;
