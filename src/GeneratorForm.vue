@@ -315,4 +315,19 @@ button {
   right: 32px;
   top: 32px;
 }
+@media screen and (max-width: 460px) {
+  .form {
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+  .col:nth-child(1) {
+    padding-right: 16px;
+  }
+  .result {
+    max-width: 100vw;
+    overflow-x: auto;
+    box-sizing: border-box;
+  }
+}
 </style>
